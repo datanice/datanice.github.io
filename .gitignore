@@ -1,0 +1,13 @@
+
+# Compiled source #
+###################
+content
+output
+pelican-svbhack
+develop_server.sh
+fabfile.py
+index.html
+Makefile
+pelicanconf.py
+pelicanconf.pyc
+publishconf.py
