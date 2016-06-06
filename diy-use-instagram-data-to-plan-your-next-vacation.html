@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Hassen">
+  <meta name="description" content="Posts and writings by Hassen">
+
+
+<meta name="keywords" content="">
+
+  <title>
+    Datanice
+&ndash; DIY : Use Instagram data to plan your next vacation  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="">
+        <img src="/images/datanice_logo.png" alt="logo">
+      </a>
+      <h2 class="site-title"><a  href="/">Hassen</a></h2>
+      <p>Exploring the world with data</p>
+      <ul class="base-links">
+        <li><a href="/pages/a-propos.html">About</a></li>
+        <li><a href="http://getpelican.com/" target="_blank">Pelican</a></li>
+        <li><a href="#" target="_blank">You can add links in your config file</a></li>
+        <li><a href="#" target="_blank">Another social link</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title entry-title">
+    <h3><a href="/diy-use-instagram-data-to-plan-your-next-vacation.html">DIY : Use Instagram data to plan your next vacation</a></h3>
+  </div>
+  <div class="article_text">
+    <p>When I travel, I always want to get the most of the city I'm visiting.
+One way is to talk to local people and get advices about which spots you
+shouldn't miss. But I wish I could have the point of view of the past
+visitors... Which places did they enjoy the most ?  Where is the best
+spot to watch the sunset ?  The best selfies you can get ? I also want
+to have a look of some beaches before choosing one or getting an idea
+about what some areas looks like... The idea here is to ask Instagram
+about the nearby popular spots.</p>
+<p><img alt="" src="https://images.unsplash.com/36/xIsiRLngSRWN02yA2BbK_submission-photo-7.jpg?q=80&amp;fm=jpg&amp;s=3a6dbf2c0735cde117a0e6e2fd11a84b" /></p>
+<!--more-->
+
+<p>After looking into the Instagram API and playing around with it, I came
+up with the following script.</p>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">instagram.client</span> <span class="kn">import</span> <span class="n">InstagramAPI</span>
+
+<span class="n">INSTAGRAM_ACCESS_TOKEN</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">INSTAGRAM_CLIENT_ID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">INSTAGRAM_CLIENT_SECRET</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">InstagramAPI</span><span class="p">(</span><span class="n">access_token</span><span class="o">=</span><span class="n">INSTAGRAM_ACCESS_TOKEN</span><span class="p">,</span> <span class="n">client_id</span><span class="o">=</span><span class="n">INSTAGRAM_CLIENT_ID</span><span class="p">,</span><span class="n">client_secret</span><span class="o">=</span><span class="n">INSTAGRAM_CLIENT_SECRET</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">getNbLikes</span><span class="p">(</span><span class="n">listMedia</span><span class="p">):</span>
+    <span class="n">likes</span> <span class="o">=</span><span class="mi">0</span>
+    <span class="n">count</span> <span class="o">=</span><span class="mi">0</span>
+    <span class="k">for</span> <span class="n">media</span> <span class="ow">in</span> <span class="n">listMedia</span><span class="p">:</span>
+        <span class="n">likes</span> <span class="o">=</span> <span class="n">likes</span> <span class="o">+</span> <span class="n">media</span><span class="o">.</span><span class="n">like_count</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">likes</span><span class="o">/</span><span class="n">count</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">getTags</span><span class="p">(</span><span class="n">listMedia</span><span class="p">):</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">media</span> <span class="ow">in</span> <span class="n">listMedia</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">mediaTag</span> <span class="ow">in</span> <span class="n">media</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
+            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mediaTag</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">getMedia</span><span class="p">(</span><span class="n">locationId</span><span class="p">):</span>
+    <span class="n">medias</span> <span class="o">=</span>  <span class="n">api</span><span class="o">.</span><span class="n">location_recent_media</span><span class="p">(</span><span class="n">location_id</span><span class="o">=</span><span class="n">locationId</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">medias</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="n">bestLocations</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="n">latD</span><span class="o">=</span><span class="mf">48.858844</span>
+<span class="n">lonD</span><span class="o">=</span><span class="mf">2.294351</span>
+
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">locations</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">location_search</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">48.858844</span><span class="o">+</span><span class="n">x</span><span class="o">*</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">lng</span><span class="o">=</span><span class="mf">2.294351</span><span class="o">+</span><span class="n">z</span><span class="o">*</span><span class="mf">0.001</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">:</span>
+            <span class="n">likes</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">location</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">bestLocations</span><span class="p">):</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="n">getMedia</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">likes</span> <span class="o">=</span> <span class="n">getNbLikes</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+                <span class="n">tags</span> <span class="o">=</span> <span class="n">getTags</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="p">:</span>
+                    <span class="n">bestLocations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">latitude</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span><span class="n">longitude</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span><span class="n">likes</span><span class="o">=</span><span class="n">likes</span><span class="p">,</span><span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="n">nbrImages</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)))</span>
+
+<span class="n">finalData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">bestLocations</span><span class="p">)</span>
+<span class="n">finalData</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;instadata.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>We first query for the locations around the coordinates of the location
+we wish to know more about and then we query for the photos of each
+location and get the number of likes and the number of pictures for it.</p>
+<p>Note: You need to replace the Access Tokens and Client ID with the
+values you get from Instagram
+<a href="https://www.instagram.com/developer/clients/manage/">here</a>.</p>
+<p>After running the previous script for some time, we get a nice dataset
+that we can analyze with pandas.</p>
+<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="o">&gt;</span> <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;instadata.csv&quot;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="o">&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This is the head of the dataFrame displayed in iPython Notebook.</p>
+<p><a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-222844.png"><img alt="Screenshot from 2015-09-04
+22:28:44" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-222844.png?w=660" /></a></p>
+<p>Now let's see which spots have the most likes per picture and which ones
+have the most pictures</p>
+<div class="highlight"><pre><span></span>gr = df.groupby(&#39;name&#39;).sum()
+</pre></div>
+
+
+<p>After dropping the useless columns</p>
+<div class="highlight"><pre><span></span>my_plot = gr.head(30).sort(columns=&#39;likes&#39;,ascending=False).plot(kind=&#39;bar&#39;,figsize=[15,5])
+</pre></div>
+
+
+<p><a href="https://datanice.files.wordpress.com/2015/09/index.png"><img alt="index" src="https://datanice.files.wordpress.com/2015/09/index.png?w=660" /></a></p>
+<p>This script could be improved with some text mining on the names, to
+combine the similar results. (You can see that we have multiple results
+for the Eiffel tower).</p>
+<p>The next step is to visualize the nearby pictures.<br />
+I put up a little angularJS application where we can select a location
+and see a list of pictures per location.<br />
+I'll put the code online when I have more time.</p>
+<p><a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-235936.png"><img alt="Screenshot from 2015-09-04
+23:59:36" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-235936.png" /></a></p>
+<p>Please let me know in the comments if you have any improvement ideas !</p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Fri 04 September 2015</p>
+    <p>Category: <a href="/category/non-classe.html">Non classé</a>
+    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Hassen. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
