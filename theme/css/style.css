@@ -40,6 +40,9 @@ hr {
 img {
   max-width: 100%;
 }
+.align-title {
+    text-align: center;
+}
 aside div#user_meta {
   padding: 40px;
   text-align: center;
@@ -160,6 +163,9 @@ main div#ending_message {
   }
   aside h2 {
     margin: 10px 0 0 0;
+  }
+  .align-title {
+    text-align: left;
   }
   aside div#user_meta {
     max-width: 192px;
