@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Hassen">
+  <meta name="description" content="Posts and writings by Hassen">
+
+
+<meta name="keywords" content="beer, deep learning, neural networks, rnn">
+
+  <title>
+    Datanice
+&ndash; Beer reviews with Recurrent Neural Networks (RNN)  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="">
+        <img src="/images/datanice_logo.png" alt="logo">
+      </a>
+      <h2 class="site-title"><a  href="/">Datanice</a></h2>
+      <p>Exploring the world with data</p>
+      <ul class="base-links">
+        <li><a href="/pages/a-propos.html">About</a></li>
+        <li><a href="http://getpelican.com/" target="_blank">Pelican</a></li>
+        <li><a href="#" target="_blank">You can add links in your config file</a></li>
+        <li><a href="#" target="_blank">Another social link</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title entry-title">
+    <h3><a href="/beer-reviews-with-recurrent-neural-networks-rnn.html">Beer reviews with Recurrent Neural Networks (RNN)</a></h3>
+  </div>
+  <div class="article_text">
+    <p>Since Andrej Karpathy conviced me of the <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness
+of Recurrent Neural
+Networks</a>, I
+decided to give it a try as soon as possible.</p>
+<p>As I was wondering in the Wiesn in Munich for the Oktoberfest, the beer
+festival, I wondered how would a RNN write a beer review.</p>
+<p><a href="https://datanice.files.wordpress.com/2015/10/img_20150928_201119163.jpg"><img alt="IMG_20150928_201119163" src="https://datanice.files.wordpress.com/2015/10/img_20150928_201119163.jpg" /></a></p>
+<!--more-->
+
+<p>The beautiful thing about recurrent neural networks compared
+with regular neural networks is that they keep a history of all the past
+elements in a sequence in their hidden layers. They can be very
+efficient at generating sequences like text or music <a href="http://www.hexahedria.com/2015/08/03/composing-music-with-recurrent-neural-networks/">Composing Music
+With Recurrent Neural
+Networks</a>.</p>
+<p><img alt="" src="http://karpathy.github.io/assets/rnn/charseq.jpeg" /></p>
+<p>In the diagram above (from Andrej Karpathy blog post) , we see how the
+different layers are linked to each other in the RNN. Note that to train
+a Neural Network we can use a regular backpropagation algorithm
+adjusting weights to increase the score of the desired output. For the
+test phase, we feed each output to the next input to generate a text
+sample.</p>
+<p>I used the
+<a href="https://github.com/gjreda/beer-snob-says/blob/master/sample.txt">data</a>
+from Greg Reda repository, who created a beer review bot <a href="http://www.gregreda.com/2015/03/30/beer-review-markov-chains/">using Markov
+Chains.</a>So
+what do RNN think about beer ?</p>
+<blockquote>
+<p>The smell is creamy, malty and woody, not much presence. The taste is
+dark fruits, and floral hops before its a strong destroy from the
+mouth as it warms up</p>
+</blockquote>
+<p>We see that the vocabulary is not perfect, Here I'm using a hign
+temperature which makes the RNN take greater risks but causes more
+mistakes.</p>
+<p>With a low temperature (0.3) we get the most frequent expressions, but
+not too much innovation</p>
+<blockquote>
+<p>Pours a clear golden color with a thin head that dissipated quickly.
+The smell is very sweet and sweet with a bit of citrus and a hint of
+citrus. The taste is somewhat sweet and smokey with a light bitterness
+to it. The body is light and creamy with a somewhat smooth finish.</p>
+</blockquote>
+<p>Notice that we find a complete review :look, smell ,taste and body.
+Sometimes I also encounter grades. The RNN has not only learnt to use
+words and expressions but it has also learnt the layout of a beer review
+!</p>
+<blockquote>
+<p>The mouthfeel is good with a slightly sweet taste. The finish is sweet
+and refreshing, and it was pretty good. I smell a bit of bitterness
+and a crisp aftertaste.</p>
+</blockquote>
+<p>We can also force the network to use some text at the beginning, we can
+get some nice reviews :</p>
+<blockquote>
+<p>This one reminds me of a porter. Pours a moderate copper colour, with
+a malty straw color. Thick head that stays and left leaving no lacing.</p>
+<p>This one is pretty nice. The carbonation is in the mouth, creamy and
+pretty drinkable. The hops are the grainy and piney flavors even the
+hops right off</p>
+<p>One of my new large rum. I have got to sip a good brewery. It is by
+the 2007 barrelard for a consume. Just no hoppiness for the point.</p>
+<p>One of my favourite of all the weizen glass.Pours a bright straw color
+with beige gold colored head of good carbonation. Plenty of lace.
+Smell is caramel malt, and yeast.</p>
+</blockquote>
+<p>I can go on for long with this... If you want to train your own RNN,
+just use <a href="https://github.com/karpathy/char-rnn">Andrej's Code on
+Github</a>, he also made a <a href="https://gist.github.com/karpathy/d4dee566867f8291f086">simple
+version in
+numpy/python</a></p>
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Thu 08 October 2015</p>
+    <p>Category: <a href="/category/non-classe.html">Non classé</a>
+ &ndash; Tags:
+      <a href="/tag/beer.html">beer</a>,      <a href="/tag/deep-learning.html">deep learning</a>,      <a href="/tag/neural-networks.html">neural networks</a>,      <a href="/tag/rnn.html">rnn</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Hassen. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>
