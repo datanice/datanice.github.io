@@ -1,0 +1,16 @@
+.grid line {
+    stroke: #C8D5DA;
+    stroke-dasharray: 1 1;
+}
+
+.grid path.domain {
+    stroke: #C8D5DA;
+    stroke-dasharray: 1 1;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #C8D5DA;
+
+}
