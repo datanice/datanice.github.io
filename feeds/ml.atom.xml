@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Datanice</title><link href="/" rel="alternate"></link><link href="/feeds/ml.atom.xml" rel="self"></link><id>/</id><updated>2016-06-13T22:28:00-07:00</updated><entry><title>Machine Learning 101 : What is regularization ? [Interactive]</title><link href="/machine-learning-101-what-is-regularization-interactive.html" rel="alternate"></link><published>2016-06-13T22:28:00-07:00</published><author><name>Datanice</name></author><id>tag:,2016-06-13:machine-learning-101-what-is-regularization-interactive.html</id><summary type="html">
+        &lt;script src="images/lib/regression.js"&gt;&lt;/script&gt;
+        &lt;script src="images/lib/d3.min.js"&gt;&lt;/script&gt;
+        &lt;script src="images/lib/bounce.js"&gt;&lt;/script&gt;
+        &lt;div&gt;
+            &lt;h2&gt;When do we use regularization ?&lt;/h2&gt;
+            &lt;p&gt;In Machine learning and statistics, a common task is to fit a model to a set of training data. This model can be used later to make predictions or classify new data points.&lt;/p&gt;
+            &lt;p&gt;When the model fits the training data but does not have a good predicting performance and generalization power, we have an overfitting problem.&lt;/p&gt;
+            &lt;p&gt;Regularization is a technique used to avoid this overfitting problem.
+            The idea behind regularization is that models that overfit the data are complex models that have for example too many parameters.
+            In the example below we see how three different models fit the same dataset.&lt;/p&gt;
+            &lt;p&gt;We used different degrees of polynomials : 1 (linear), 2 (quadratic) and 3 (cubic).&lt;/p&gt;
+            &lt;p&gt;Notice how the cubic polynomial "sticks" to the data but does not describe the underlying relationship of the data points.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="container" style="width:100%"&gt;
+            &lt;div class="row"&gt;
+                &lt;div class="col-md-112 col-xs-12"&gt;
+                    &lt;div class="row"&gt;
+                        &lt;h4 class="merriTitle text-center"&gt;Different fitting models&lt;/h4&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="plot1"&gt;&lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="plot2"&gt;&lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="plot3"&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row"&gt;
+                        &lt;h4 class="merriTitle text-center"&gt;Cost function visualization&lt;/h4&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row"&gt;
+                        &lt;div class="col-xs-6 text-center"&gt;
+                            &lt;div class="legendColor" style="background-color:#114B5F"&gt;&lt;/div&gt;
+                            &lt;div class="legendText"&gt;Training error&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="col-xs-6 text-center"&gt;
+                            &lt;div class="legendColor" style="background-color:#88D498"&gt;&lt;/div&gt;
+                            &lt;div class="legendText"&gt;Complexity term&lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row"&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="bar1"&gt;
+                        &lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="bar2"&gt;
+                        &lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="bar3"&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row" style="margin-bottom:50px"&gt;
+                        &lt;div class="jelly-best-target box" style="opacity:0"&gt;BEST&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;p&gt;Move the cursor below to change the value of &amp;lambda; :&lt;br&gt; the regularization parameter &amp;lambda; = &lt;span id="lambdaValue"&gt;&lt;/span&gt;&lt;/p&gt;
+            &lt;div id="slider" class="ui-slider"&gt;&lt;/div&gt;
+            &lt;div&gt;
+                &lt;h2&gt;How does regularization work ?&lt;/h2&gt;
+                &lt;p&gt;In order to find the best model, the common method in machine learning is to define a loss or cost function that describes how well the model fits the data. The goal is to find the model that minimzes this loss function.&lt;/p&gt;
+                &lt;p&gt;In the case of polynomials we can define L as follows:&lt;/p&gt;
+                &lt;img src="images/regression-loss1.png" alt="" style="margin-top:20px" /&gt;
+                &lt;p&gt;The idea is to penalize this loss function by adding a complexity term that would give a bigger loss for more complex models.
+                In our case we can use the square sum of the polynomial parameters.&lt;/p&gt;
+                &lt;img src="images/regression-loss2.png" alt="" style="margin-top:20px" /&gt;
+                &lt;p&gt;In the visualization above, you can play around with the value of Lambda to penalize more or less the complex models.&lt;/p&gt;
+                &lt;p&gt;This way, for lamda very large, models with high complexity are ruled out. And for small lambda, models with high training errors are ruled out. The optimal solution lies somewhere in the middle.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;script src="images/lib/jquery-1.8.3.min.js"&gt;&lt;/script&gt;
+            &lt;script src="images/lib/jquery-ui-1.10.3.custom.min.js"&gt;&lt;/script&gt;
+            &lt;script src="images/lib/bootstrap.min.js"&gt;&lt;/script&gt;
+            &lt;script src="images/lib/texture.min.js"&gt;&lt;/script&gt;
+            &lt;!--        &lt;script&gt;
+            var svg= d3.select("#plot1").append("svg");
+            svg.append("rect")
+            var texture = textures.lines()
+            .thicker();
+            svg.call(texture);
+            svg.append("circle")
+            .attr("cx",20)
+            .attr("cy",20)
+            .attr("r",20)
+            .attr("fill",texture.url())
+            &lt;/script&gt;--&gt;
+            &lt;script src="images/lib/polynome.js"&gt;&lt;/script&gt;
+        </summary><category term="Machine Learning 101"></category><category term="interactive visualization"></category></entry></feed>

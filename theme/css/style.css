@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Merriweather);
+
 body {
   margin: 0;
   padding: 0;
@@ -6,6 +8,12 @@ body {
   font: 300 15px/1.6 "Helvetica Neue",Helvetica,Arial,sans-serif;
   line-height: 1.5;
 }
+
+.merriTitle {
+  font-family: 'Merriweather',Arial,sans-serif;
+  font-weight : bold;
+}
+
 a:hover, a:focus, a:active {
     color: #1E8AB6;
 }
@@ -189,7 +197,40 @@ main div#ending_message {
     border-top: 0;
   }
 }
-
+/*image for summary of an article*/
 .summary-image {
   margin-top:20px;
 }
+/*legends and box for regression graph*/
+.legendColor {
+  width : 20px;
+  height : 20px;
+  margin : 5px;
+  margin-bottom : -5px;
+  margin-right:20px;
+  display: inline-block;
+}
+
+.legendText {
+  margin : 5px;
+  display: inline;
+}
+
+.box{
+  text-align: center;
+  height:20px;
+  padding:2px;
+  width:80px;
+  border-radius:2px;
+  color:white;
+  background-color:#88D498;
+  font-weight:bold;
+  line-height: 15px;
+}
+/*box sizing not on aside*/
+aside div {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+

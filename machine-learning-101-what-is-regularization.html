@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ## for client-side less
+  <link rel="stylesheet/less" type="text/css" href="/theme/css/style.less">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js" type="text/javascript"></script>
+  -->
+
+  <link rel="stylesheet" type="text/css" href="/theme/css/style.css">
+  <link rel="stylesheet" type="text/css" href="/theme/css/pygments.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans|PT+Serif|PT+Mono">
+  <link type="text/css" href="/theme/css/ui-slider.css" rel="stylesheet" />
+  <link type="text/css" href="/theme/css/bootstrap.css" rel="stylesheet" />
+  <link type="text/css" href="/theme/css/viz.css" rel="stylesheet" />
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Hassen">
+  <meta name="description" content="Posts and writings by Hassen">
+
+
+<meta name="keywords" content="thats, awesome">
+
+  <title>
+    Datanice
+&ndash; Machine Learning 101 : What is regularization  </title>
+
+</head>
+
+<body>
+  <aside>
+    <div id="user_meta">
+      <a href="">
+        <img src="/images/datanice_logo.png" alt="logo">
+      </a>
+      <div class = "align-title">
+        <h2 class="site-title"><a  href="/">Datanice</a></h2>
+        <p>Exploring the world with data</p>
+      </div>
+      <ul class="base-links">
+        <li><a href="/pages/a-propos.html">About</a></li>
+        <li><a href="http://getpelican.com/" target="_blank">Pelican</a></li>
+        <li><a href="#" target="_blank">You can add links in your config file</a></li>
+        <li><a href="#" target="_blank">Another social link</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <p>
+      <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
+      </p>
+    </header>
+
+<article>
+  <div class="article_title entry-title">
+    <h3><a href="/machine-learning-101-what-is-regularization.html">Machine Learning 101 : What is regularization</a></h3>
+  </div>
+  <div class="article_text">
+    
+        <script src="images/lib/regression.js"></script>
+        <script src="images/lib/d3.min.js"></script>
+        <script src="images/lib/bounce.js"></script>
+        <div>
+            <h2>When do we use regularization ?</h2>
+            <p>In Machine learning and statistics, a common task is to fit a model to a set of training data. This model can be used later to make predictions or classify new data points.</p>
+            <p>When the model fits the training data but does not have a good predicting performance and generalization power : We have an overfitting problem.</p>
+            <p>Regularization is a technique used to avoid this overfitting problem.
+            The idea behind regularization is that models that overfit the data are complex models that have for example too many parameters.
+            In the example below we see how three different models fit the same dataset.</p>
+            <p>We used different degrees of polynomials : 1 (linear), 2 (quadratic) and 3 (cubic).</p>
+            <p>Notice how the cubic polynomial "sticks" to the data the data but does not describe the underlying relationship of the data points.</p>
+        </div>
+        <div class="container" style="width:100%">
+            <div class="row">
+                <div class="col-md-112 col-xs-12">
+                    <div class="row">
+                        <h4 class="merriTitle text-center">Different fitting models</h4>
+                        <div class="col-md-4 col-xs-4" id="plot1"></div>
+                        <div class="col-md-4 col-xs-4" id="plot2"></div>
+                        <div class="col-md-4 col-xs-4" id="plot3"></div>
+                    </div>
+                    <div class="row">
+                        <h4 class="merriTitle text-center">Cost function visualization</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 text-center">
+                            <div class="legendColor" style="background-color:#114B5F"></div>
+                            <div class="legendText">Training error</div>
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <div class="legendColor" style="background-color:#88D498"></div>
+                            <div class="legendText">Complexity term</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 col-xs-4" id="bar1">
+                        </div>
+                        <div class="col-md-4 col-xs-4" id="bar2">
+                        </div>
+                        <div class="col-md-4 col-xs-4" id="bar3">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:50px">
+                        <div class="jelly-best-target box" style="opacity:0">BEST</div>
+                    </div>
+                </div>
+            </div>
+            <div id="slider" class="ui-slider"></div>
+            <div>
+                <h2>How does regularization work ?</h2>
+                <p>In order to find the bes model, the common method in machine learning is to define a loss or cost function that describes how well the model fits the data.</p>
+                <p>In the case of polynomials:</p>
+                L =
+                <p>The idea is to penalize this loss function by adding a complexity term that would give a bigger loss for more complex models.
+                In our case we can use the square sum of the polynomial parameters.</p>
+                L =
+                <p>In the visualization above, you can play around with the value of Lambda to penalize more or less the complex models.</p>
+                <p>This way, for lamda very large, models with high complexity are ruled out. And for small lambda, models with high training errors are ruled out. The optimal solution lies somewhere in the middle.</p>
+            </div>
+            <script src="images/lib/jquery-1.8.3.min.js"></script>
+            <script src="images/lib/jquery-ui-1.10.3.custom.min.js"></script>
+            <script src="images/lib/bootstrap.min.js"></script>
+            <script src="images/lib/texture.min.js"></script>
+            <!--        <script>
+            var svg= d3.select("#plot1").append("svg");
+            svg.append("rect")
+            var texture = textures.lines()
+            .thicker();
+            svg.call(texture);
+            svg.append("circle")
+            .attr("cx",20)
+            .attr("cy",20)
+            .attr("r",20)
+            .attr("fill",texture.url())
+            </script>-->
+            <script src="images/lib/polynome.js"></script>
+        
+  </div>
+  <div class="article_meta">
+    <p>Posted on: Sat 09 July 2016</p>
+    <p>Category: <a href="/category/yeah.html">yeah</a>
+ &ndash; Tags:
+      <a href="/tag/thats.html">thats</a>,      <a href="/tag/awesome.html">awesome</a>    </p>
+  </div>
+
+
+</article>
+
+
+    <div id="ending_message">
+      <p>&copy; Hassen. Built using <a href="http://getpelican.com" target="_blank">Pelican</a>. Theme by Giulio Fidente on <a href="https://github.com/gfidente/pelican-svbhack" target="_blank">github</a>. </p>
+    </div>
+  </main>
+</body>
+</html>

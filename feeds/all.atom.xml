@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Datanice</title><link href="/" rel="alternate"></link><link href="/feeds/all.atom.xml" rel="self"></link><id>/</id><updated>2016-06-13T22:28:00-07:00</updated><entry><title>Machine Learning 101 : What is regularization ? [Interactive]</title><link href="/machine-learning-101-what-is-regularization-interactive.html" rel="alternate"></link><published>2016-06-13T22:28:00-07:00</published><author><name>Datanice</name></author><id>tag:,2016-06-13:machine-learning-101-what-is-regularization-interactive.html</id><summary type="html">
+        &lt;script src="images/lib/regression.js"&gt;&lt;/script&gt;
+        &lt;script src="images/lib/d3.min.js"&gt;&lt;/script&gt;
+        &lt;script src="images/lib/bounce.js"&gt;&lt;/script&gt;
+        &lt;div&gt;
+            &lt;h2&gt;When do we use regularization ?&lt;/h2&gt;
+            &lt;p&gt;In Machine learning and statistics, a common task is to fit a model to a set of training data. This model can be used later to make predictions or classify new data points.&lt;/p&gt;
+            &lt;p&gt;When the model fits the training data but does not have a good predicting performance and generalization power, we have an overfitting problem.&lt;/p&gt;
+            &lt;p&gt;Regularization is a technique used to avoid this overfitting problem.
+            The idea behind regularization is that models that overfit the data are complex models that have for example too many parameters.
+            In the example below we see how three different models fit the same dataset.&lt;/p&gt;
+            &lt;p&gt;We used different degrees of polynomials : 1 (linear), 2 (quadratic) and 3 (cubic).&lt;/p&gt;
+            &lt;p&gt;Notice how the cubic polynomial "sticks" to the data but does not describe the underlying relationship of the data points.&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="container" style="width:100%"&gt;
+            &lt;div class="row"&gt;
+                &lt;div class="col-md-112 col-xs-12"&gt;
+                    &lt;div class="row"&gt;
+                        &lt;h4 class="merriTitle text-center"&gt;Different fitting models&lt;/h4&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="plot1"&gt;&lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="plot2"&gt;&lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="plot3"&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row"&gt;
+                        &lt;h4 class="merriTitle text-center"&gt;Cost function visualization&lt;/h4&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row"&gt;
+                        &lt;div class="col-xs-6 text-center"&gt;
+                            &lt;div class="legendColor" style="background-color:#114B5F"&gt;&lt;/div&gt;
+                            &lt;div class="legendText"&gt;Training error&lt;/div&gt;
+                        &lt;/div&gt;
+                        &lt;div class="col-xs-6 text-center"&gt;
+                            &lt;div class="legendColor" style="background-color:#88D498"&gt;&lt;/div&gt;
+                            &lt;div class="legendText"&gt;Complexity term&lt;/div&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row"&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="bar1"&gt;
+                        &lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="bar2"&gt;
+                        &lt;/div&gt;
+                        &lt;div class="col-md-4 col-xs-4" id="bar3"&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                    &lt;div class="row" style="margin-bottom:50px"&gt;
+                        &lt;div class="jelly-best-target box" style="opacity:0"&gt;BEST&lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;p&gt;Move the cursor below to change the value of &amp;lambda; :&lt;br&gt; the regularization parameter &amp;lambda; = &lt;span id="lambdaValue"&gt;&lt;/span&gt;&lt;/p&gt;
+            &lt;div id="slider" class="ui-slider"&gt;&lt;/div&gt;
+            &lt;div&gt;
+                &lt;h2&gt;How does regularization work ?&lt;/h2&gt;
+                &lt;p&gt;In order to find the best model, the common method in machine learning is to define a loss or cost function that describes how well the model fits the data. The goal is to find the model that minimzes this loss function.&lt;/p&gt;
+                &lt;p&gt;In the case of polynomials we can define L as follows:&lt;/p&gt;
+                &lt;img src="images/regression-loss1.png" alt="" style="margin-top:20px" /&gt;
+                &lt;p&gt;The idea is to penalize this loss function by adding a complexity term that would give a bigger loss for more complex models.
+                In our case we can use the square sum of the polynomial parameters.&lt;/p&gt;
+                &lt;img src="images/regression-loss2.png" alt="" style="margin-top:20px" /&gt;
+                &lt;p&gt;In the visualization above, you can play around with the value of Lambda to penalize more or less the complex models.&lt;/p&gt;
+                &lt;p&gt;This way, for lamda very large, models with high complexity are ruled out. And for small lambda, models with high training errors are ruled out. The optimal solution lies somewhere in the middle.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;script src="images/lib/jquery-1.8.3.min.js"&gt;&lt;/script&gt;
+            &lt;script src="images/lib/jquery-ui-1.10.3.custom.min.js"&gt;&lt;/script&gt;
+            &lt;script src="images/lib/bootstrap.min.js"&gt;&lt;/script&gt;
+            &lt;script src="images/lib/texture.min.js"&gt;&lt;/script&gt;
+            &lt;!--        &lt;script&gt;
+            var svg= d3.select("#plot1").append("svg");
+            svg.append("rect")
+            var texture = textures.lines()
+            .thicker();
+            svg.call(texture);
+            svg.append("circle")
+            .attr("cx",20)
+            .attr("cy",20)
+            .attr("r",20)
+            .attr("fill",texture.url())
+            &lt;/script&gt;--&gt;
+            &lt;script src="images/lib/polynome.js"&gt;&lt;/script&gt;
+        </summary><category term="Machine Learning 101"></category><category term="interactive visualization"></category></entry><entry><title>Step by step Kaggle competition tutorial</title><link href="/step-by-step-kaggle-competition-tutorial.html" rel="alternate"></link><published>2016-04-10T22:31:00-07:00</published><author><name>aptissimum</name></author><id>tag:,2016-04-10:step-by-step-kaggle-competition-tutorial.html</id><summary type="html">&lt;p&gt;&lt;a href="https://www.kaggle.com/"&gt;Kaggle&lt;/a&gt; is a Data Science community where
+thousands of Data Scientists compete to solve complex data problems.&lt;/p&gt;
+&lt;p&gt;In this article we are going to see how to go through a Kaggle
+competition step by step.&lt;/p&gt;
+&lt;p&gt;The contest explored here is the &lt;a href="https://www.kaggle.com/c/sf-crime/scripts"&gt;San Francisco Crime Classification
+contest&lt;/a&gt;. The goal is to
+classify a crime occurrence knowing the time and place it happened.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot from 2016-04-10
+10:06:15.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-10-100615.png" /&gt;&lt;/p&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;Here, the objectives are fixed by Kaggle. In general, when starting a
+Data Science project, one of the most important steps is the &lt;strong&gt;business
+understanding&lt;/strong&gt; and the &lt;strong&gt;definition of the scope and objectives of the
+project&lt;/strong&gt;.&lt;/p&gt;
+&lt;h1&gt;Data understanding :&lt;/h1&gt;
+&lt;p&gt;For data exploration I like to use IPython Notebook which allows you to
+run your scripts line by line:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="n"&gt;df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;train.csv&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="c1"&gt;#884262&lt;/span&gt;
+&lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;img alt="Screenshot from 2016-04-10
+08:31:38.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-10-083138.png" /&gt;&lt;/p&gt;
+&lt;p&gt;We have 800k data points in our training set covering about ten years of
+crime. We have enough data points. No need to search for other sources
+to complete our training set for now.&lt;/p&gt;
+&lt;p&gt;A simple pandas function which allows to find outliers in the data is :&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;df.describe()&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot from 2016-04-09
+22:17:56.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-09-221756.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Looking at this description we can think that we have some outliers in
+the data. A x,y graph plot confirms the outliers hypothesis.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;plt.plot(df.X,df.Y,'o', markersize=7)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="figure_1.png" src="https://datanice.files.wordpress.com/2016/04/figure_1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Here we don't have any &lt;strong&gt;missing data&lt;/strong&gt; , but it's very important to
+look for missing values in your data. We 'll see how to deal with them
+in the next step.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;empty = df.apply(lambda col: pd.isnull(col))
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;When cleaning the data it's also useful to draw histograms of different
+categorical attributes to see if some categories are under represented.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot from 2016-04-10
+08:45:32.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-10-084532.png" /&gt;&lt;/p&gt;
+&lt;p&gt;In the visualization below, every line represents a category of crime.
+Each point shows the number of crimes of a category within a year
+window. This representation shows that the year is important in
+determining the crime category. For example, looking at the yellow line
+(car thefts) we see a notable decrease over the years. We can do the
+same plot for months, hours, days of the month, days of the week...
+(using the timestamp attribute).&lt;/p&gt;
+&lt;p&gt;[caption id="attachment_162" align="alignnone" width="709"]&lt;img alt="Screenshot
+from 2016-04-10
+08:24:07.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-10-082407.png" /&gt;
+Frequency of crime categories per year per crime category[/caption]&lt;/p&gt;
+&lt;p&gt;Other data exploration and understanding techniques:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Boxplots for outliers detection&lt;/li&gt;
+&lt;li&gt;Scatter plots and &lt;strong&gt;scatter matrix&lt;/strong&gt; to see attribute correlation
+    and distribution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Data preparation :&lt;/h1&gt;
+&lt;p&gt;Sometimes, when training your models, it's a good idea to sample the
+data and take only a part of it for training. Some models have a big
+computation cost and would take forever to run with a large number of
+training points.&lt;/p&gt;
+&lt;h2&gt;Dealing with outliers and missing data&lt;/h2&gt;
+&lt;p&gt;When preparing the data we have to decide what to do with the outliers,
+or missing data. Should we delete them ? Or predict the values ? There
+is no correct answer. If your objective is to optimize a performance
+indicator then you should try both solutions and choose whichever one
+gives the best performance result.&lt;/p&gt;
+&lt;h2&gt;Feature engineering&lt;/h2&gt;
+&lt;p&gt;Feature engineering is a good way to climb the Kaggle leader board. You
+can come up with smart combinations of attributes and build new ones
+depending on your "feeling".&lt;/p&gt;
+&lt;p&gt;For example in our data, we have an address column which contains either
+a street address or a crossroad. We can create a new feature
+&lt;em&gt;crimeHappenedInCrossRoad&lt;/em&gt; that contains true if we are in a crossroad
+and false in the other case.&lt;/p&gt;
+&lt;p&gt;More evident features to add : the date columns. We can use the
+timestamp column to get the year, month, day of month, day of week,
+hour, minute of the crime. Of course some of these features can be
+useless and could even harm your prediction score. Choose wisely!&lt;/p&gt;
+&lt;h2&gt;&lt;strong&gt;Formatting the data&lt;/strong&gt;&lt;/h2&gt;
+&lt;p&gt;Some Predictive Models and some implementations of Predictive models do
+not allow the use of nominal categories (like our District Column). A
+simple way of getting around it is to binarize this attribute.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;df = pd.concat([df,pd.get_dummies(df[&amp;#39;PdDistrict&amp;#39;])], axis=1, join_axes=[df.index])
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;strong&gt;Data Analysis :&lt;br /&gt;
+&lt;/strong&gt;
+==================&lt;/p&gt;
+&lt;p&gt;In order to improve your Kaggle score you have to &lt;strong&gt;try different models
+and algorithms&lt;/strong&gt;. For every model, you can try different feature sets
+and data pre-processings.&lt;/p&gt;
+&lt;p&gt;If you 're using a scripting tool, you can write a script that would
+take the different data pre-processings as a parameter and automate the
+testing.&lt;/p&gt;
+&lt;p&gt;Below is a plot showing the performance of Random Forest Trees &lt;strong&gt;using
+different data pre-processings&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Screenshot from 2016-04-10
+09:32:27.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-10-093227.png" /&gt;&lt;/p&gt;
+&lt;p&gt;Next, you have to &lt;strong&gt;optimize your algorithm parameters&lt;/strong&gt; for the best
+prediction. Some libraries and tools can do the job for you (like the
+scikit-learn grid search).&lt;/p&gt;
+&lt;p&gt;[caption id="attachment_225" align="alignnone" width="550"]&lt;img alt="Screenshot
+from 2016-04-10
+09:40:33.png" src="https://datanice.files.wordpress.com/2016/04/screenshot-from-2016-04-10-094033.png" /&gt;
+Logloss representation for different values of Random Forest
+parameters[/caption]&lt;/p&gt;
+&lt;p&gt;I also wanted to share a library that I recently stumbled upon, the&lt;a href="http://yandex.github.io/rep/estimators.html"&gt;REP
+library&lt;/a&gt;. It's a python
+library that offers wrappers for popular Machine learning libraries like
+Scikit Learn, XGBoost, Theanets, Neurolab and PyBrain. This library can
+simplify your automation scripts to test different libraries with the
+same code but it also allows you to combine the libraries tools. Like
+for example &lt;strong&gt;running bagging over complex algorithms&lt;/strong&gt; or &lt;strong&gt;boosting
+Neural nets&lt;/strong&gt; !&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;base_xgb = XGBoostClassifier(n_estimators=20)
+ada_xgb = SklearnClassifier(AdaBoostClassifier(base_estimator=base_xgb, n_estimators=5))
+ada_xgb.fit(train_data[variables], train_labels)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Data visualization :&lt;/h1&gt;
+&lt;p&gt;One of the objectives of the competition was to build visualizations to
+help getting insights from the data.&lt;/p&gt;
+&lt;p&gt;Below are two 5-dimension maps showing crime "trends" depending on the
+hour of the day for the first map and the year for the second one.&lt;/p&gt;
+&lt;p&gt;The longitude is coded on the X axis&lt;br /&gt;
+The latitude on the Y axis&lt;br /&gt;
+The crime category is coded by the color&lt;br /&gt;
+The crime frequency by the opacity&lt;br /&gt;
+The time (hour/year) is shown in the animation.&lt;/p&gt;
+&lt;p&gt;[caption id="attachment_243" align="alignnone"
+width="946"]&lt;img alt="output_1tVmzy.gif" src="https://datanice.files.wordpress.com/2016/04/output_1tvmzy.gif" /&gt;
+Map showing the frequency of crimes per category per hour[/caption]&lt;/p&gt;
+&lt;p&gt;[caption id="attachment_244" align="alignnone"
+width="1211"]&lt;img alt="output_VmtlA1.gif" src="https://datanice.files.wordpress.com/2016/04/output_vmtla1.gif" /&gt;
+Map showing the frequency of crimes per category per year[/caption]&lt;/p&gt;
+&lt;h1&gt;Conclusion :&lt;/h1&gt;
+&lt;p&gt;Don't be scared to start a Kaggle competition. Start by submitting a
+first version without optimizing your algorithms too much. Then, once
+your work flow is clear, you can add new algorithms, new features and
+features-sets to climb the Kaggle leader board.&lt;/p&gt;</summary></entry><entry><title>Beer reviews with Recurrent Neural Networks (RNN)</title><link href="/beer-reviews-with-recurrent-neural-networks-rnn.html" rel="alternate"></link><published>2015-10-08T14:27:00-07:00</published><author><name>aptissimum</name></author><id>tag:,2015-10-08:beer-reviews-with-recurrent-neural-networks-rnn.html</id><summary type="html">&lt;p&gt;Since Andrej Karpathy conviced me of the &lt;a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/"&gt;The Unreasonable Effectiveness
+of Recurrent Neural
+Networks&lt;/a&gt;, I
+decided to give it a try as soon as possible.&lt;/p&gt;
+&lt;p&gt;As I was wondering in the Wiesn in Munich for the Oktoberfest, the beer
+festival, I wondered how would a RNN write a beer review.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/10/img_20150928_201119163.jpg"&gt;&lt;img alt="IMG_20150928_201119163" src="https://datanice.files.wordpress.com/2015/10/img_20150928_201119163.jpg" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;The beautiful thing about recurrent neural networks compared
+with regular neural networks is that they keep a history of all the past
+elements in a sequence in their hidden layers. They can be very
+efficient at generating sequences like text or music &lt;a href="http://www.hexahedria.com/2015/08/03/composing-music-with-recurrent-neural-networks/"&gt;Composing Music
+With Recurrent Neural
+Networks&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="http://karpathy.github.io/assets/rnn/charseq.jpeg" /&gt;&lt;/p&gt;
+&lt;p&gt;In the diagram above (from Andrej Karpathy blog post) , we see how the
+different layers are linked to each other in the RNN. Note that to train
+a Neural Network we can use a regular backpropagation algorithm
+adjusting weights to increase the score of the desired output. For the
+test phase, we feed each output to the next input to generate a text
+sample.&lt;/p&gt;
+&lt;p&gt;I used the
+&lt;a href="https://github.com/gjreda/beer-snob-says/blob/master/sample.txt"&gt;data&lt;/a&gt;
+from Greg Reda repository, who created a beer review bot &lt;a href="http://www.gregreda.com/2015/03/30/beer-review-markov-chains/"&gt;using Markov
+Chains.&lt;/a&gt;So
+what do RNN think about beer ?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The smell is creamy, malty and woody, not much presence. The taste is
+dark fruits, and floral hops before its a strong destroy from the
+mouth as it warms up&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We see that the vocabulary is not perfect, Here I'm using a hign
+temperature which makes the RNN take greater risks but causes more
+mistakes.&lt;/p&gt;
+&lt;p&gt;With a low temperature (0.3) we get the most frequent expressions, but
+not too much innovation&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Pours a clear golden color with a thin head that dissipated quickly.
+The smell is very sweet and sweet with a bit of citrus and a hint of
+citrus. The taste is somewhat sweet and smokey with a light bitterness
+to it. The body is light and creamy with a somewhat smooth finish.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Notice that we find a complete review :look, smell ,taste and body.
+Sometimes I also encounter grades. The RNN has not only learnt to use
+words and expressions but it has also learnt the layout of a beer review
+!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The mouthfeel is good with a slightly sweet taste. The finish is sweet
+and refreshing, and it was pretty good. I smell a bit of bitterness
+and a crisp aftertaste.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;We can also force the network to use some text at the beginning, we can
+get some nice reviews :&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This one reminds me of a porter. Pours a moderate copper colour, with
+a malty straw color. Thick head that stays and left leaving no lacing.&lt;/p&gt;
+&lt;p&gt;This one is pretty nice. The carbonation is in the mouth, creamy and
+pretty drinkable. The hops are the grainy and piney flavors even the
+hops right off&lt;/p&gt;
+&lt;p&gt;One of my new large rum. I have got to sip a good brewery. It is by
+the 2007 barrelard for a consume. Just no hoppiness for the point.&lt;/p&gt;
+&lt;p&gt;One of my favourite of all the weizen glass.Pours a bright straw color
+with beige gold colored head of good carbonation. Plenty of lace.
+Smell is caramel malt, and yeast.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I can go on for long with this... If you want to train your own RNN,
+just use &lt;a href="https://github.com/karpathy/char-rnn"&gt;Andrej's Code on
+Github&lt;/a&gt;, he also made a &lt;a href="https://gist.github.com/karpathy/d4dee566867f8291f086"&gt;simple
+version in
+numpy/python&lt;/a&gt;&lt;/p&gt;</summary><category term="beer"></category><category term="deep learning"></category><category term="neural networks"></category><category term="rnn"></category></entry><entry><title>Sentiment analysis for Youtube channels - with NLTK</title><link href="/sentiment-analysis-for-youtube-channels-with-nltk.html" rel="alternate"></link><published>2015-09-09T20:27:00-07:00</published><author><name>aptissimum</name></author><id>tag:,2015-09-09:sentiment-analysis-for-youtube-channels-with-nltk.html</id><summary type="html">&lt;p&gt;In this tutorial, we 'll first take a look at the Youtube API to
+retrieve comments data about the channel as well as basic information
+about the likes count and view count of the videos. Then, we will use
+Nltk to see most frequently used words in the comments and plot some
+sentiment graphs.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/download1-e1441826980693.jpeg"&gt;&lt;img alt="download" src="https://datanice.files.wordpress.com/2015/09/download1-e1441826980693.jpeg" /&gt;&lt;/a&gt;&lt;br /&gt;
+&lt;!--more--&gt;&lt;/p&gt;
+&lt;h1&gt;The Data&lt;/h1&gt;
+&lt;p&gt;With the script below, we first query the video channels providing the
+channel ID then for every video we get a list of comments (Youtube
+limits this number to 20 comments per query)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;apiclient.discovery&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;build&lt;/span&gt; 
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt; 
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;time&lt;/span&gt;
+
+&lt;span class="n"&gt;DEVELOPER_KEY&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; 
+&lt;span class="n"&gt;YOUTUBE_API_SERVICE_NAME&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+&lt;span class="n"&gt;YOUTUBE_API_VERSION&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt;
+
+&lt;span class="n"&gt;youtube&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;build&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;YOUTUBE_API_SERVICE_NAME&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;YOUTUBE_API_VERSION&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;developerKey&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;DEVELOPER_KEY&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_videos_FromChanel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;channelId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;search_response&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;search&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="n"&gt;channelId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;channelId&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="nb"&gt;type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;video&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id,snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;maxResults&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;50&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;order&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;search_response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;items&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;[])&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_comment_threads&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;videos&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;tempComments&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;videos&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;time&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sleep&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mf"&gt;1.0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt; &lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;youtube&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;commentThreads&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;list&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="n"&gt;part&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;videoId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;videoId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+            &lt;span class="n"&gt;textFormat&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;plainText&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;maxResults&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="n"&gt;order&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;relevance&amp;#39;&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;execute&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;results&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;items&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]:&lt;/span&gt;
+            &lt;span class="n"&gt;comment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;topLevelComment&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+            &lt;span class="n"&gt;tempComment&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;videoId&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;id&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;videoId&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;videoName&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;video&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;nbrReplies&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;totalReplyCount&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;author&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;authorDisplayName&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;likes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;likeCount&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;publishedAt&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;publishedAt&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;comment&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;snippet&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;textDisplay&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+            &lt;span class="n"&gt;tempComments&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tempComment&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;tempComments&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;then you can call the function using :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;videos = get_videos_FromChanel(youtube, &amp;quot;CHANNEL_ID&amp;quot;,&amp;quot;viewCount&amp;quot;)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h1&gt;Statistics&lt;/h1&gt;
+&lt;p&gt;Youtube has a special option to retreive the statistic data, we just
+have to query the video list method using the "statistic" option.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;def getVideoInfos(videos):
+    videoList = {}
+    for search_result in videos:
+         if search_result[&amp;quot;id&amp;quot;][&amp;quot;kind&amp;quot;] == &amp;quot;youtube#video&amp;quot;:
+             videoList[search_result[&amp;quot;id&amp;quot;][&amp;quot;videoId&amp;quot;]] = search_result[&amp;quot;snippet&amp;quot;][&amp;quot;title&amp;quot;]
+
+    s = &amp;#39;,&amp;#39;.join(videoList.keys())
+    videos_list_response = youtube.videos().list(id=s,part=&amp;#39;id,statistics&amp;#39;).execute()
+    res = []
+    for i in videos_list_response[&amp;#39;items&amp;#39;]:
+         temp_res = dict(v_title = videoList[i[&amp;#39;id&amp;#39;]])
+         temp_res.update(i[&amp;#39;statistics&amp;#39;])
+         res.append(temp_res)
+
+    data = pd.DataFrame.from_dict(res)
+    data[&amp;#39;viewCount&amp;#39;] = data[&amp;#39;viewCount&amp;#39;].map(lambda x : float(x))
+    data[&amp;#39;commentCount&amp;#39;] = data[&amp;#39;commentCount&amp;#39;].map(lambda x : float(x))
+    return data
+
+data = getVideoInfos(videos)
+
+infos.sort(&amp;#39;viewCount&amp;#39;,ascending=0).head(20).plot(kind=&amp;#39;bar&amp;#39;, x=&amp;#39;v_title&amp;#39;,y=&amp;#39;viewCount&amp;#39;)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is what I get for the view count of the &lt;a href="https://www.youtube.com/channel/UClYb9NpXnRemxYoWbcYANsA"&gt;shots of
+Awe&lt;/a&gt; videos
+channel:&lt;br /&gt;
+&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-175623.png"&gt;&lt;img alt="Screenshot from 2015-09-09
+17:56:23" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-175623.png" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;We can have the same plots for likes counts and comments count, and plot
+scatter plots to see if there is a correlation between these features.&lt;/p&gt;
+&lt;p&gt;We can note that the third video has only been uploaded for a few days
+at the time I’m writing this article, that's what we call a buzz video.&lt;/p&gt;
+&lt;p&gt;An interesting chart to plot would be the number of views/time online.&lt;/p&gt;
+&lt;h1&gt;Comments analysis&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h3&gt;Word Frequency&lt;/h3&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;What do people talk about in the comments ? What do they like/hate the
+most about the channel ?&lt;br /&gt;
+In order to answer these questions we can look at the word frequency in
+the comments. We can use the "nltk" package to see the distribution :&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;nltk&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;nltk.probability&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;nltk.corpus&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;stopwords&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+
+&lt;span class="nb"&gt;all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_json&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;comments.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;stop_eng&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;stopwords&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;english&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;customstopwords&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt;
+
+&lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="n"&gt;sentences&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="n"&gt;tokenizedSentences&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;txt&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+&lt;span class="err"&gt;  &lt;/span&gt; &lt;span class="err"&gt; &lt;/span&gt;&lt;span class="n"&gt;sentences&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;txt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="err"&gt;  &lt;/span&gt; &lt;span class="err"&gt; &lt;/span&gt;&lt;span class="n"&gt;tokenized&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;:,.!?&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;txt&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt;
+&lt;span class="err"&gt;  &lt;/span&gt; &lt;span class="err"&gt; &lt;/span&gt;&lt;span class="n"&gt;tokens&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;extend&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tokenized&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="err"&gt;  &lt;/span&gt; &lt;span class="err"&gt; &lt;/span&gt;&lt;span class="n"&gt;tokenizedSentences&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tokenized&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;hashtags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;#&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="n"&gt;ghashtags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;+&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="n"&gt;mentions&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;@&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="n"&gt;links&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;http&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;startswith&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;www&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)]&lt;/span&gt;
+&lt;span class="n"&gt;filtered_tokens&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;tokens&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;stop_eng&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;customstopwords&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isalpha&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;w&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;lt;&lt;/span&gt;&lt;span class="mi"&gt;3&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;hashtags&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;ghashtags&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;links&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;w&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;mentions&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;fd&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;FreqDist&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;filtered_tokens&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;FreqDist returns a list of tuples containing each word and the number of
+its occurences. Let"s plot a bar chart to visualize it:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;scipy&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pylab&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;operator&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;operator&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;itemgetter&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;attrgetter&lt;/span&gt;
+
+&lt;span class="n"&gt;sortedTuples&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;sorted&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;items&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;key&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;operator&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;itemgetter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt; &lt;span class="n"&gt;reverse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;a&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;sorted_x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;span class="n"&gt;b&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;i&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;i&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;sorted_x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;20&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+
+&lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;arange&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;y&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;scipy&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;array&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;b&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pylab&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;figure&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;ax&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_axes&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;0.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mf"&gt;1.5&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;ax&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;bar&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;y&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;align&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;center&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;ax&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_xticks&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;ax&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_xticklabels&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;a&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And the result :&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-203414.png"&gt;&lt;img alt="Screenshot from 2015-09-09
+20:34:14" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-203414.png" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The most used words are "love" (141 occurrences), "like" (89
+occurrences) then "think" and "life". Pretty deep !&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;h3&gt;Sentiment Analysis&lt;/h3&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In order to analyze the comments sentiments, we are going to train a
+Naive Bayes Classifier using a dataset provided by nltk. This could be
+imroved using a better training dataset for comments or tweets.&lt;/p&gt;
+&lt;p&gt;The reviews are classified as "negative" or "positive", and our
+classifier will return the probability of each label. We will compute a
+score = prob("positive") - prob("negative") to get a score between -1 an
+1.&lt;/p&gt;
+&lt;h4&gt;Training the classifier&lt;/h4&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;nltk.classify.util&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;nltk.classify&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;NaiveBayesClassifier&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;nltk.corpus&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;movie_reviews&lt;/span&gt;
+
+&lt;span class="c1"&gt;###############&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;word_feats&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+&lt;span class="err"&gt;   &lt;/span&gt; &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;([(&lt;/span&gt;&lt;span class="n"&gt;word&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;word&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="c1"&gt;###############&lt;/span&gt;
+
+&lt;span class="n"&gt;negids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;movie_reviews&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fileids&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;neg&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;posids&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;movie_reviews&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;fileids&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pos&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="err"&gt; &lt;/span&gt;
+&lt;span class="n"&gt;negfeats&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="n"&gt;word_feats&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;movie_reviews&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fileids&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;])),&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;neg&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;negids&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;span class="n"&gt;posfeats&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[(&lt;/span&gt;&lt;span class="n"&gt;word_feats&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;movie_reviews&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;words&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;fileids&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="p"&gt;])),&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;pos&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;f&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;posids&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="n"&gt;trainfeats&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;negfeats&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;posfeats&lt;/span&gt;
+&lt;span class="err"&gt; &lt;/span&gt;
+&lt;span class="n"&gt;classifier&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;NaiveBayesClassifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;train&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;trainfeats&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;###############&lt;/span&gt;
+
+&lt;span class="nb"&gt;all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_json&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;comments.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;tokenized&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;text&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;t&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;:,.!?&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;t&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;()]&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;sentiment&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;tokenized&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="n"&gt;classifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;prob_classify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;word_feats&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;prob&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;pos&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;classifier&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;prob_classify&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;word_feats&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;prob&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;neg&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once the classifier trained, we added a column with the sentiment score
+using the "classifier.prob_classify" function.&lt;/p&gt;
+&lt;p&gt;Let's see the results for the first video in a scatter plot (versus
+likes)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;videos = all.videoId.unique()
+all[all.videoId==videos[1]].plot(kind=&amp;#39;scatter&amp;#39;, x=&amp;#39;sentiment&amp;#39;, y=&amp;#39;likes&amp;#39;, figsize=(12,8))
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-210331.png"&gt;&lt;img alt="Screenshot from 2015-09-09
+21:03:31" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-210331.png" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;For the next one,&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-210427.png"&gt;&lt;img alt="Screenshot from 2015-09-09
+21:04:27" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-09-210427.png" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;A cool thing to do here is to see what's the text of every comment. The
+best thing to do is to have an interactive plot where hovering on a
+point shows the comment text. This could be done with the
+&lt;a href="http://d3js.org/"&gt;d3.js&lt;/a&gt; library. We can also make the axis interactive
+and add animations to animate the points when for example changing the
+sentiment axis to the publishing date of the comment...&lt;/p&gt;
+&lt;p&gt;Next Steps:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Adding a plot for "number of views"/"time online"&lt;/li&gt;
+&lt;li&gt;Interactive d3.js plot to see the comment text when hovering on he
+    comment.&lt;/li&gt;
+&lt;/ul&gt;</summary></entry><entry><title>Find the perfect city for you using Meetups data</title><link href="/find-the-perfect-city-for-you-using-meetups-data.html" rel="alternate"></link><published>2015-09-07T15:14:00-07:00</published><author><name>aptissimum</name></author><id>tag:,2015-09-07:find-the-perfect-city-for-you-using-meetups-data.html</id><summary type="html">&lt;p&gt;Some time ago I discovered a very nice tool to find nearby events and
+things to do around. It's called &lt;a href="http://www.citypulse.io"&gt;citypulse.io&lt;/a&gt;
+and I found it very useful.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-170729.png"&gt;&lt;img alt="Screenshot from 2015-09-05
+17:07:29" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-170729-e1441466003403.png" /&gt;&lt;/a&gt;&lt;br /&gt;
+Every night, they pull new data from:&lt;!--more--&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Ticketmaster (UK &amp;amp; US)&lt;/li&gt;
+&lt;li&gt;Eventbrite.com&lt;/li&gt;
+&lt;li&gt;Meetup.com (Meetup API)&lt;/li&gt;
+&lt;li&gt;Viagogo.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;After playing a little bit with the browser developper tools, I found
+out the url to get the datapulse data for a given latitude and
+longitude.  &lt;/p&gt;
+&lt;p&gt;Example:&lt;a href="http://www.citypulse.io/api/event/GetEvents?startTime=2015-09-05T09:09:07.638Z&amp;amp;startEndTime=2015-09-12T09:09:07.638Z&amp;amp;nwLat=40.81538085107934&amp;amp;nwLong=-74.14212817710876&amp;amp;seLat=40.66086032810895&amp;amp;seLong=-73.69512195152282&amp;amp;categoryString=19,77,90,7,80,89,112,113,145,146,&amp;amp;skip=100&amp;amp;take=100&amp;amp;mapZoom=11&amp;amp;guid=47f1f28c-b855-4566-8da2-0151052209ad"&gt;http://www.citypulse.io/api/event/GetEvents?startTime=2015-09-05T09:09:07.638Z&amp;amp;startEndTime=2015-09-12T09:09:07.638Z&amp;amp;nwLat=40.81538085107934&amp;amp;nwLong=-74.14212817710876&amp;amp;seLat=40.66086032810895&amp;amp;seLong=-73.69512195152282&amp;amp;categoryString=19,77,90,7,80,89,112,113,145,146,&amp;amp;skip=100&amp;amp;take=100&amp;amp;mapZoom=11&amp;amp;guid=47f1f28c-b855-4566-8da2-0151052209ad&lt;br /&gt;
+&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Thanks to this API I created a JSON file containing the  2015 events and
+meetups for Los Angeles and New York. Let's explore the data !  &lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="https://images.unsplash.com/29/night-square.jpg?q=80&amp;amp;fm=jpg&amp;amp;s=3aab7af150b0717491f65e18dc481982" /&gt;Here
+is a little python script that I put up to clean the data and plot some
+bar charts to get insights. I use the pandas package which is very
+practical to have a first glance of your data.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt; &lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;locale&lt;/span&gt;
+&lt;span class="n"&gt;locale&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;setlocale&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;locale&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;LC_NUMERIC&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="nb"&gt;all&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_json&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;allData.json&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TicketPrice&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TicketPrice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;$0.00&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;basestring&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;price&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;TicketPrice&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="nb"&gt;float&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;locale&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atof&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:])))&lt;/span&gt;
+&lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;isFree&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;price&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="k"&gt;else&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;city&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;RegionId&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;map&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;&lt;span class="mi"&gt;3639&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Los Angeles&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;3633&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;New York&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;#all.price.argmax()&lt;/span&gt;
+&lt;span class="c1"&gt;#all = all.drop(all.index[52])&lt;/span&gt;
+
+&lt;span class="n"&gt;gro&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;all&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupby&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;CategoryName&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;city&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;temp0&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;CategoryName&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;my_plot1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;temp0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unstack&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;kind&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;bar&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Number of events per event category [Week 1 September 2015]&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;my_plot1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Event category&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;my_plot1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_ylabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Number of events&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+
+&lt;span class="n"&gt;temp2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isFree&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="kp"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;gro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isFree&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;span class="n"&gt;my_plot2&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;temp2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unstack&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;kind&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;bar&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Percentage of Free events [Week 1 September 2015]&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;my_plot2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Event category&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;my_plot2&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_ylabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Percentage of Free events&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;temp1&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;gro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;price&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="kp"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;gro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;price&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="n"&gt;gro&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;isFree&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="kp"&gt;sum&lt;/span&gt;&lt;span class="p"&gt;())&lt;/span&gt;
+&lt;span class="n"&gt;my_plot3&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;temp1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;unstack&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;plot&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;kind&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;bar&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;title&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;Mean price per event category [Week 1 September 2015]&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;figsize&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;6&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+&lt;span class="n"&gt;my_plot3&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_xlabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Event category&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;my_plot3&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_ylabel&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;Mean price of events&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;First I fill the empty strings in the ticket price column and replace ""
+with "\$0.00".&lt;br /&gt;
+Then I create a column "isFree" which will be useful to see which kind
+of events are free in each city, but also to get the number of non free
+events used to compute the mean price of the tickets.&lt;/p&gt;
+&lt;p&gt;Here are the results :&lt;br /&gt;
+&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-183907.png"&gt;&lt;img alt="Screenshot from 2015-09-05
+18:39:07" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-183907.png?w=660" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In the chart above, we can see that Los Angeles has more online events
+organised with a noticeable difference in the number of Learning meetups
+that could be explained by the important number of tech meetups in the
+area.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-183920.png"&gt;&lt;img alt="Screenshot from 2015-09-05
+18:39:20" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-183920.png?w=660" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The chart above shows that there is no big difference in the percentage
+of free events in every category. The data for the Comedy category
+cannot be trusted because of the small number of events of this type in
+the dataset.&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-183933.png"&gt;&lt;img alt="Screenshot from 2015-09-05
+18:39:33" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-05-183933.png?w=660" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;The chart above shows the mean price for the events of each category.&lt;/p&gt;
+&lt;p&gt;Note :&lt;br /&gt;
+Before getting the data for the whole year, I started by looking at the
+data for one month. The chart for the percentage of free events looked
+different for that range, Looking at a large dataset is a way to get rid
+of these biases.&lt;/p&gt;
+&lt;p&gt;Next Steps and Improvements:&lt;br /&gt;
+-Looking at the evolution of trends over the years&lt;br /&gt;
+-Compare with more cities&lt;/p&gt;</summary><category term="events"></category><category term="meetup API"></category><category term="pandas"></category><category term="python"></category></entry><entry><title>DIY : Use Instagram data to plan your next vacation</title><link href="/diy-use-instagram-data-to-plan-your-next-vacation.html" rel="alternate"></link><published>2015-09-04T23:03:00-07:00</published><author><name>aptissimum</name></author><id>tag:,2015-09-04:diy-use-instagram-data-to-plan-your-next-vacation.html</id><summary type="html">&lt;p&gt;When I travel, I always want to get the most of the city I'm visiting.
+One way is to talk to local people and get advices about which spots you
+shouldn't miss. But I wish I could have the point of view of the past
+visitors... Which places did they enjoy the most ?  Where is the best
+spot to watch the sunset ?  The best selfies you can get ? I also want
+to have a look of some beaches before choosing one or getting an idea
+about what some areas looks like... The idea here is to ask Instagram
+about the nearby popular spots.&lt;/p&gt;
+&lt;p&gt;&lt;img alt="" src="https://images.unsplash.com/36/xIsiRLngSRWN02yA2BbK_submission-photo-7.jpg?q=80&amp;amp;fm=jpg&amp;amp;s=3a6dbf2c0735cde117a0e6e2fd11a84b" /&gt;&lt;/p&gt;
+&lt;!--more--&gt;
+
+&lt;p&gt;After looking into the Instagram API and playing around with it, I came
+up with the following script.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;os&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;json&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;collections&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;instagram.client&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;InstagramAPI&lt;/span&gt;
+
+&lt;span class="n"&gt;INSTAGRAM_ACCESS_TOKEN&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;INSTAGRAM_CLIENT_ID&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class="n"&gt;INSTAGRAM_CLIENT_SECRET&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;&amp;#39;&amp;#39;&lt;/span&gt;
+
+&lt;span class="n"&gt;api&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;InstagramAPI&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;access_token&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;INSTAGRAM_ACCESS_TOKEN&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;client_id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;INSTAGRAM_CLIENT_ID&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;client_secret&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;INSTAGRAM_CLIENT_SECRET&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;getNbLikes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listMedia&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;likes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;media&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;listMedia&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;likes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;likes&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;media&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;like_count&lt;/span&gt;
+        &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;count&lt;/span&gt; &lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;likes&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="n"&gt;count&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;getTags&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;listMedia&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;media&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;listMedia&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;mediaTag&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;media&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;mediaTag&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;Counter&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;getMedia&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;locationId&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;medias&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt;  &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;location_recent_media&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;location_id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;locationId&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;medias&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+
+&lt;span class="n"&gt;bestLocations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[];&lt;/span&gt;
+&lt;span class="n"&gt;latD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;48.858844&lt;/span&gt;
+&lt;span class="n"&gt;lonD&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;2.294351&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;x&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;z&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;range&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;-&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="k"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;locations&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;location_search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;lat&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;48.858844&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;x&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mf"&gt;0.001&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;lng&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mf"&gt;2.294351&lt;/span&gt;&lt;span class="o"&gt;+&lt;/span&gt;&lt;span class="n"&gt;z&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;&lt;span class="mf"&gt;0.001&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;locations&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;likes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="nb"&gt;any&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;d&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;name&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;d&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;bestLocations&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+                &lt;span class="n"&gt;images&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getMedia&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;likes&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getNbLikes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;images&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;getTags&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;images&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+                &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;images&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt; &lt;span class="p"&gt;:&lt;/span&gt;
+                    &lt;span class="n"&gt;bestLocations&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;latitude&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;point&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;latitude&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;longitude&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;point&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;longitude&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;likes&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;likes&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="nb"&gt;id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;location&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;id&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;nbrImages&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;images&lt;/span&gt;&lt;span class="p"&gt;)))&lt;/span&gt;
+
+&lt;span class="n"&gt;finalData&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;from_dict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bestLocations&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;finalData&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;to_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;instadata.csv&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;sep&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;encoding&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We first query for the locations around the coordinates of the location
+we wish to know more about and then we query for the photos of each
+location and get the number of likes and the number of pictures for it.&lt;/p&gt;
+&lt;p&gt;Note: You need to replace the Access Tokens and Client ID with the
+values you get from Instagram
+&lt;a href="https://www.instagram.com/developer/clients/manage/"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;After running the previous script for some time, we get a nice dataset
+that we can analyze with pandas.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;read_csv&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;instadata.csv&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="n"&gt;sep&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\t&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This is the head of the dataFrame displayed in iPython Notebook.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-222844.png"&gt;&lt;img alt="Screenshot from 2015-09-04
+22:28:44" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-222844.png?w=660" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now let's see which spots have the most likes per picture and which ones
+have the most pictures&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;gr = df.groupby(&amp;#39;name&amp;#39;).sum()
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;After dropping the useless columns&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;my_plot = gr.head(30).sort(columns=&amp;#39;likes&amp;#39;,ascending=False).plot(kind=&amp;#39;bar&amp;#39;,figsize=[15,5])
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/index.png"&gt;&lt;img alt="index" src="https://datanice.files.wordpress.com/2015/09/index.png?w=660" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This script could be improved with some text mining on the names, to
+combine the similar results. (You can see that we have multiple results
+for the Eiffel tower).&lt;/p&gt;
+&lt;p&gt;The next step is to visualize the nearby pictures.&lt;br /&gt;
+I put up a little angularJS application where we can select a location
+and see a list of pictures per location.&lt;br /&gt;
+I'll put the code online when I have more time.&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-235936.png"&gt;&lt;img alt="Screenshot from 2015-09-04
+23:59:36" src="https://datanice.files.wordpress.com/2015/09/screenshot-from-2015-09-04-235936.png" /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Please let me know in the comments if you have any improvement ideas !&lt;/p&gt;</summary></entry></feed>
