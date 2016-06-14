@@ -10,4 +10,5 @@ Makefile
 pelicanconf.py
 pelicanconf.pyc
 publishconf.py
+publishconf.pyc
 how_to_use
