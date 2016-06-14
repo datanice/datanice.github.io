@@ -19,11 +19,9 @@ function extend(ChildClass, ParentClass) {
 
 datanice.Parent = function(){
 	this.param = 5
-	console.log("parent construct")
 
 };
 datanice.Parent.prototype.consolih = function(){
-	console.log("fff")
 }
 datanice.Child = function(){
 datanice.Parent.call(this)
@@ -202,7 +200,6 @@ datanice.RegularizationPlot = function(container,params,plotPoints) {
 		.attr("stroke-width","3px")
 		.attr("d", this.grid.line(this.t))
 		.attr("id","function-line");
-		console.log(plotPoints)
 	this.grid.lab.text("Polynomial : Degree " + (plotPoints.equation.length-1))
 };
 
@@ -277,14 +274,12 @@ datanice.RegularizationBarPlot.prototype.getDataForRegression = function(data,d,
 		error = error + Math.pow(Math.abs(point_value-data[i][1]),2);
 	}
 	this.error = error/data.length;
-	// console.log("error",error)
 	var complexityTerm = this.getComplexity(lambda)
 	return this.getBarData(this.error,complexityTerm)
 }
 
 datanice.RegularizationBarPlot.prototype.getComplexity = function(lambda) {
 	var complexityTerm = 0;
-	// console.log(this.result)
 	for (var j=1; j < this.result.equation.length; j++) {
 			complexityTerm = complexityTerm + lambda*Math.pow(this.result.equation[j],2);
 	}
@@ -349,7 +344,6 @@ datanice.BarPlotGroup.prototype.sliderChange = function(lambda){
 	this.bestBox[0].setAttribute("style","opacity:1;margin-left:"+(width*this.indexMin+70)+"px");
 	bounce.applyTo(this.bestBox);
 	document.getElementById("lambdaValue").innerHTML = lambda;
-	console.log(document.getElementById("lambdaValue"))
 }
 
 datanice.BarPlotGroup.prototype.resize = function() {
