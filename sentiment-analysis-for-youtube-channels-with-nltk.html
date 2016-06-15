@@ -19,7 +19,6 @@
   <meta name="author" content="Datanice">
   <meta name="description" content="Posts and writings by Datanice">
 
-  <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Datanice Atom" />
 
 <meta name="keywords" content="">
 
@@ -59,7 +58,6 @@
     <header>
       <p>
       <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
-      &brvbar; <a href="/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
@@ -79,47 +77,47 @@ sentiment graphs.</p>
 <p>With the script below, we first query the video channels providing the
 channel ID then for every video we get a list of comments (Youtube
 limits this number to 20 comments per query)</p>
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">apiclient.discovery</span> <span class="kn">import</span> <span class="n">build</span> 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
-<span class="kn">import</span> <span class="nn">time</span>
+<div class="highlight"><pre><span></span>from apiclient.discovery import build 
+import pandas as pd 
+import time
 
-<span class="n">DEVELOPER_KEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
-<span class="n">YOUTUBE_API_SERVICE_NAME</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">YOUTUBE_API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+DEVELOPER_KEY = &quot;&quot; 
+YOUTUBE_API_SERVICE_NAME = &quot;&quot;
+YOUTUBE_API_VERSION = &quot;&quot;
 
-<span class="n">youtube</span> <span class="o">=</span> <span class="n">build</span><span class="p">(</span><span class="n">YOUTUBE_API_SERVICE_NAME</span><span class="p">,</span> <span class="n">YOUTUBE_API_VERSION</span><span class="p">,</span> <span class="n">developerKey</span><span class="o">=</span><span class="n">DEVELOPER_KEY</span><span class="p">)</span>
+youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
-<span class="k">def</span> <span class="nf">get_videos_FromChanel</span><span class="p">(</span><span class="n">youtube</span><span class="p">,</span> <span class="n">channelId</span><span class="p">,</span><span class="n">order</span><span class="p">):</span>
-    <span class="n">search_response</span> <span class="o">=</span> <span class="n">youtube</span><span class="o">.</span><span class="n">search</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-        <span class="n">channelId</span><span class="o">=</span><span class="n">channelId</span><span class="p">,</span>
-        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;video&quot;</span><span class="p">,</span>
-        <span class="n">part</span><span class="o">=</span><span class="s2">&quot;id,snippet&quot;</span><span class="p">,</span>
-        <span class="n">maxResults</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-        <span class="n">order</span><span class="o">=</span><span class="n">order</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+def get_videos_FromChanel(youtube, channelId,order):
+    search_response = youtube.search().list(
+        channelId=channelId,
+        type=&quot;video&quot;,
+        part=&quot;id,snippet&quot;,
+        maxResults=50,
+        order=order
+    ).execute()
 
-    <span class="k">return</span> <span class="n">search_response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;items&quot;</span><span class="p">,</span> <span class="p">[])</span>
+    return search_response.get(&quot;items&quot;, [])
 
-<span class="k">def</span> <span class="nf">get_comment_threads</span><span class="p">(</span><span class="n">youtube</span><span class="p">,</span> <span class="n">videos</span><span class="p">):</span>
-    <span class="n">tempComments</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">video</span> <span class="ow">in</span> <span class="n">videos</span><span class="p">:</span>
-        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
-        <span class="k">print</span> <span class="n">video</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">youtube</span><span class="o">.</span><span class="n">commentThreads</span><span class="p">()</span><span class="o">.</span><span class="n">list</span><span class="p">(</span>
-            <span class="n">part</span><span class="o">=</span><span class="s2">&quot;snippet&quot;</span><span class="p">,</span>
-            <span class="n">videoId</span><span class="o">=</span><span class="n">video</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">][</span><span class="s2">&quot;videoId&quot;</span><span class="p">],</span>
-            <span class="n">textFormat</span><span class="o">=</span><span class="s2">&quot;plainText&quot;</span><span class="p">,</span>
-            <span class="n">maxResults</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-            <span class="n">order</span><span class="o">=</span><span class="s1">&#39;relevance&#39;</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+def get_comment_threads(youtube, videos):
+    tempComments = []
+    for video in videos:
+        time.sleep(1.0)
+        print video[&quot;snippet&quot;][&quot;title&quot;]
+        results = youtube.commentThreads().list(
+            part=&quot;snippet&quot;,
+            videoId=video[&quot;id&quot;][&quot;videoId&quot;],
+            textFormat=&quot;plainText&quot;,
+            maxResults=20,
+            order=&#39;relevance&#39;
+        ).execute()
 
 
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;items&quot;</span><span class="p">]:</span>
-            <span class="n">comment</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;topLevelComment&quot;</span><span class="p">]</span>
-            <span class="n">tempComment</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">videoId</span><span class="o">=</span><span class="n">video</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">][</span><span class="s2">&quot;videoId&quot;</span><span class="p">],</span> <span class="n">videoName</span><span class="o">=</span><span class="n">video</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;title&quot;</span><span class="p">],</span><span class="n">nbrReplies</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;totalReplyCount&quot;</span><span class="p">],</span><span class="n">author</span> <span class="o">=</span> <span class="n">comment</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;authorDisplayName&quot;</span><span class="p">],</span><span class="n">likes</span> <span class="o">=</span> <span class="n">comment</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;likeCount&quot;</span><span class="p">],</span><span class="n">publishedAt</span><span class="o">=</span><span class="n">comment</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;publishedAt&quot;</span><span class="p">],</span><span class="n">text</span> <span class="o">=</span> <span class="n">comment</span><span class="p">[</span><span class="s2">&quot;snippet&quot;</span><span class="p">][</span><span class="s2">&quot;textDisplay&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-            <span class="n">tempComments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tempComment</span><span class="p">)</span>
+        for item in results[&quot;items&quot;]:
+            comment = item[&quot;snippet&quot;][&quot;topLevelComment&quot;]
+            tempComment = dict(videoId=video[&quot;id&quot;][&quot;videoId&quot;], videoName=video[&quot;snippet&quot;][&quot;title&quot;],nbrReplies = item[&quot;snippet&quot;][&quot;totalReplyCount&quot;],author = comment[&quot;snippet&quot;][&quot;authorDisplayName&quot;],likes = comment[&quot;snippet&quot;][&quot;likeCount&quot;],publishedAt=comment[&quot;snippet&quot;][&quot;publishedAt&quot;],text = comment[&quot;snippet&quot;][&quot;textDisplay&quot;].encode(&#39;utf-8&#39;).strip())
+            tempComments.append(tempComment)
 
-    <span class="k">return</span> <span class="n">tempComments</span>
+    return tempComments
 </pre></div>
 
 
@@ -176,54 +174,54 @@ at the time I’m writing this article, that's what we call a buzz video.</p>
 most about the channel ?<br />
 In order to answer these questions we can look at the word frequency in
 the comments. We can use the "nltk" package to see the distribution :</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">nltk</span>
-<span class="kn">from</span> <span class="nn">nltk.probability</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">stopwords</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class="highlight"><pre><span></span>import nltk
+from nltk.probability import *
+from nltk.corpus import stopwords
+import pandas as pd
 
-<span class="nb">all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;comments.csv&quot;</span><span class="p">)</span>
+all = pd.read_json(&quot;comments.csv&quot;)
 
-<span class="n">stop_eng</span> <span class="o">=</span> <span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">)</span>
-<span class="n">customstopwords</span> <span class="o">=</span><span class="p">[]</span>
+stop_eng = stopwords.words(&#39;english&#39;)
+customstopwords =[]
 
-<span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">sentences</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">tokenizedSentences</span> <span class="o">=</span><span class="p">[]</span>
-<span class="k">for</span> <span class="n">txt</span> <span class="ow">in</span> <span class="nb">all</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
-<span class="err">  </span> <span class="err"> </span><span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-<span class="err">  </span> <span class="err"> </span><span class="n">tokenized</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;:,.!?&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
-<span class="err">  </span> <span class="err"> </span><span class="n">tokens</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
-<span class="err">  </span> <span class="err"> </span><span class="n">tokenizedSentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
+tokens = []
+sentences = []
+tokenizedSentences =[]
+for txt in all.text:
+    sentences.append(txt.lower())
+    tokenized = [t.lower().encode(&#39;utf-8&#39;).strip(&quot;:,.!?&quot;) for t in txt.split()]
+    tokens.extend(tokenized)
+    tokenizedSentences.append(tokenized)
 
-<span class="n">hashtags</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)]</span>
-<span class="n">ghashtags</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)]</span>
-<span class="n">mentions</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)]</span>
-<span class="n">links</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">w</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;www&#39;</span><span class="p">)]</span>
-<span class="n">filtered_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">stop_eng</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">customstopwords</span> <span class="ow">and</span> <span class="n">w</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">3</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">hashtags</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">ghashtags</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">links</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">mentions</span><span class="p">]</span>
+hashtags = [w for w in tokens if w.startswith(&#39;#&#39;)]
+ghashtags = [w for w in tokens if w.startswith(&#39;+&#39;)]
+mentions = [w for w in tokens if w.startswith(&#39;@&#39;)]
+links = [w for w in tokens if w.startswith(&#39;http&#39;) or w.startswith(&#39;www&#39;)]
+filtered_tokens = [w for w in tokens if not w in stop_eng and not w in customstopwords and w.isalpha() and not len(w)&lt;3 and not w in hashtags and not w in ghashtags and not w in links and not w in mentions]
 
-<span class="n">fd</span> <span class="o">=</span> <span class="n">FreqDist</span><span class="p">(</span><span class="n">filtered_tokens</span><span class="p">)</span>
+fd = FreqDist(filtered_tokens)
 </pre></div>
 
 
 <p>FreqDist returns a list of tuples containing each word and the number of
 its occurences. Let"s plot a bar chart to visualize it:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">pylab</span>
-<span class="kn">import</span> <span class="nn">operator</span>
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span><span class="p">,</span> <span class="n">attrgetter</span>
+<div class="highlight"><pre><span></span>import scipy
+import pylab
+import operator
+from operator import itemgetter, attrgetter
 
-<span class="n">sortedTuples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fd</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sorted_x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">20</span><span class="p">]]</span>
-<span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sorted_x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">20</span><span class="p">]]</span>
+sortedTuples = sorted(fd.items(), key=operator.itemgetter(1), reverse=True)
+a = [i[0] for i in sorted_x[0:20]]
+b = [i[1] for i in sorted_x[0:20]]
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="n">f</span> <span class="o">=</span> <span class="n">pylab</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="n">f</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+x = scipy.arange(len(b))
+y = scipy.array(b)
+f = pylab.figure()
+ax = f.add_axes([0.5, 0.5, 1.5, 1.5])
+ax.bar(x, y, align=&#39;center&#39;)
+ax.set_xticks(x)
+ax.set_xticklabels(a)
+f.show()
 </pre></div>
 
 
@@ -245,31 +243,31 @@ classifier will return the probability of each label. We will compute a
 score = prob("positive") - prob("negative") to get a score between -1 an
 1.</p>
 <h4>Training the classifier</h4>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">nltk.classify.util</span>
-<span class="kn">from</span> <span class="nn">nltk.classify</span> <span class="kn">import</span> <span class="n">NaiveBayesClassifier</span>
-<span class="kn">from</span> <span class="nn">nltk.corpus</span> <span class="kn">import</span> <span class="n">movie_reviews</span>
+<div class="highlight"><pre><span></span>import pandas as pd
+import nltk.classify.util
+from nltk.classify import NaiveBayesClassifier
+from nltk.corpus import movie_reviews
 
-<span class="c1">###############</span>
-<span class="k">def</span> <span class="nf">word_feats</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
-<span class="err">   </span> <span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">word</span><span class="p">,</span> <span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">])</span>
-<span class="c1">###############</span>
+###############
+def word_feats(words):
+    return dict([(word, True) for word in words])
+###############
 
-<span class="n">negids</span> <span class="o">=</span> <span class="n">movie_reviews</span><span class="o">.</span><span class="n">fileids</span><span class="p">(</span><span class="s1">&#39;neg&#39;</span><span class="p">)</span>
-<span class="n">posids</span> <span class="o">=</span> <span class="n">movie_reviews</span><span class="o">.</span><span class="n">fileids</span><span class="p">(</span><span class="s1">&#39;pos&#39;</span><span class="p">)</span>
-<span class="err"> </span>
-<span class="n">negfeats</span> <span class="o">=</span> <span class="p">[(</span><span class="n">word_feats</span><span class="p">(</span><span class="n">movie_reviews</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="n">fileids</span><span class="o">=</span><span class="p">[</span><span class="n">f</span><span class="p">])),</span> <span class="s1">&#39;neg&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">negids</span><span class="p">]</span>
-<span class="n">posfeats</span> <span class="o">=</span> <span class="p">[(</span><span class="n">word_feats</span><span class="p">(</span><span class="n">movie_reviews</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="n">fileids</span><span class="o">=</span><span class="p">[</span><span class="n">f</span><span class="p">])),</span> <span class="s1">&#39;pos&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">posids</span><span class="p">]</span>
+negids = movie_reviews.fileids(&#39;neg&#39;)
+posids = movie_reviews.fileids(&#39;pos&#39;)
+ 
+negfeats = [(word_feats(movie_reviews.words(fileids=[f])), &#39;neg&#39;) for f in negids]
+posfeats = [(word_feats(movie_reviews.words(fileids=[f])), &#39;pos&#39;) for f in posids]
 
-<span class="n">trainfeats</span> <span class="o">=</span> <span class="n">negfeats</span> <span class="o">+</span> <span class="n">posfeats</span>
-<span class="err"> </span>
-<span class="n">classifier</span> <span class="o">=</span> <span class="n">NaiveBayesClassifier</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">trainfeats</span><span class="p">)</span>
-<span class="c1">###############</span>
+trainfeats = negfeats + posfeats
+ 
+classifier = NaiveBayesClassifier.train(trainfeats)
+###############
 
-<span class="nb">all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;comments.csv&quot;</span><span class="p">)</span>
+all = pd.read_json(&quot;comments.csv&quot;)
 
-<span class="nb">all</span><span class="p">[</span><span class="s1">&#39;tokenized&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">all</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;:,.!?&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span> <span class="p">)</span>
-<span class="nb">all</span><span class="p">[</span><span class="s1">&#39;sentiment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">all</span><span class="p">[</span><span class="s1">&#39;tokenized&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">classifier</span><span class="o">.</span><span class="n">prob_classify</span><span class="p">(</span><span class="n">word_feats</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="s1">&#39;pos&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">classifier</span><span class="o">.</span><span class="n">prob_classify</span><span class="p">(</span><span class="n">word_feats</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="s1">&#39;neg&#39;</span><span class="p">)</span> <span class="p">)</span>
+all[&#39;tokenized&#39;] = all[&#39;text&#39;].apply(lambda x: [t.lower().encode(&#39;utf-8&#39;).strip(&quot;:,.!?&quot;) for t in x.split()] )
+all[&#39;sentiment&#39;] = all[&#39;tokenized&#39;].apply(lambda x: classifier.prob_classify(word_feats(x)).prob(&#39;pos&#39;) - classifier.prob_classify(word_feats(x)).prob(&#39;neg&#39;) )
 </pre></div>
 
 

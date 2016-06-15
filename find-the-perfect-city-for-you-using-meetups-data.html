@@ -19,7 +19,6 @@
   <meta name="author" content="Datanice">
   <meta name="description" content="Posts and writings by Datanice">
 
-  <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Datanice Atom" />
 
 <meta name="keywords" content="events, meetup API, pandas, python">
 
@@ -59,7 +58,6 @@
     <header>
       <p>
       <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
-      &brvbar; <a href="/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
@@ -91,37 +89,37 @@ meetups for Los Angeles and New York. Let's explore the data !  </p>
 is a little python script that I put up to clean the data and plot some
 bar charts to get insights. I use the pandas package which is very
 practical to have a first glance of your data.</p>
-<div class="highlight"><pre><span></span><span class="err"> </span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">locale</span>
-<span class="n">locale</span><span class="o">.</span><span class="n">setlocale</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">LC_NUMERIC</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span></span> 
+import pandas as pd
+import numpy as np
+import locale
+locale.setlocale(locale.LC_NUMERIC, &#39;&#39;)
 
-<span class="nb">all</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s2">&quot;allData.json&quot;</span><span class="p">)</span>
-<span class="nb">all</span><span class="o">.</span><span class="n">TicketPrice</span> <span class="o">=</span> <span class="nb">all</span><span class="o">.</span><span class="n">TicketPrice</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s2">&quot;$0.00&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
-<span class="nb">all</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">all</span><span class="o">.</span><span class="n">TicketPrice</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">locale</span><span class="o">.</span><span class="n">atof</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
-<span class="nb">all</span><span class="p">[</span><span class="s1">&#39;isFree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">all</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
-<span class="nb">all</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">all</span><span class="o">.</span><span class="n">RegionId</span><span class="o">.</span><span class="n">map</span><span class="p">({</span><span class="mi">3639</span><span class="p">:</span><span class="s1">&#39;Los Angeles&#39;</span><span class="p">,</span><span class="mi">3633</span><span class="p">:</span><span class="s1">&#39;New York&#39;</span><span class="p">})</span>
+all = pd.read_json(&quot;allData.json&quot;)
+all.TicketPrice = all.TicketPrice.apply(lambda x: &quot;$0.00&quot; if isinstance(x, basestring) and x == &quot;&quot; else x)
+all[&#39;price&#39;] = all.TicketPrice.map(lambda x : float(locale.atof(x[1:])))
+all[&#39;isFree&#39;] = all.price.apply(lambda x: 1 if x == 0 else 0)
+all[&#39;city&#39;] = all.RegionId.map({3639:&#39;Los Angeles&#39;,3633:&#39;New York&#39;})
 
-<span class="c1">#all.price.argmax()</span>
-<span class="c1">#all = all.drop(all.index[52])</span>
+#all.price.argmax()
+#all = all.drop(all.index[52])
 
-<span class="n">gro</span> <span class="o">=</span> <span class="nb">all</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;CategoryName&#39;</span><span class="p">,</span><span class="s1">&#39;city&#39;</span><span class="p">])</span>
-<span class="n">temp0</span> <span class="o">=</span> <span class="n">gro</span><span class="o">.</span><span class="n">CategoryName</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="n">my_plot1</span> <span class="o">=</span> <span class="n">temp0</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Number of events per event category [Week 1 September 2015]&quot;</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">my_plot1</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Event category&quot;</span><span class="p">)</span>
-<span class="n">my_plot1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Number of events&quot;</span><span class="p">)</span>
+gro = all.groupby([&#39;CategoryName&#39;,&#39;city&#39;])
+temp0 = gro.CategoryName.count()
+my_plot1 = temp0.unstack().plot(kind=&#39;bar&#39;,title=&quot;Number of events per event category [Week 1 September 2015]&quot;,figsize=(10, 6))
+my_plot1.set_xlabel(&quot;Event category&quot;)
+my_plot1.set_ylabel(&quot;Number of events&quot;)
 
 
-<span class="n">temp2</span> <span class="o">=</span> <span class="n">gro</span><span class="o">.</span><span class="n">isFree</span><span class="o">.</span><span class="kp">sum</span><span class="p">()</span><span class="o">/</span><span class="n">gro</span><span class="o">.</span><span class="n">isFree</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="n">my_plot2</span> <span class="o">=</span> <span class="n">temp2</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Percentage of Free events [Week 1 September 2015]&#39;</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">my_plot2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Event category&quot;</span><span class="p">)</span>
-<span class="n">my_plot2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Percentage of Free events&quot;</span><span class="p">)</span>
+temp2 = gro.isFree.sum()/gro.isFree.count()
+my_plot2 = temp2.unstack().plot(kind=&#39;bar&#39;,title=&#39;Percentage of Free events [Week 1 September 2015]&#39;,figsize=(10, 6))
+my_plot2.set_xlabel(&quot;Event category&quot;)
+my_plot2.set_ylabel(&quot;Percentage of Free events&quot;)
 
-<span class="n">temp1</span> <span class="o">=</span> <span class="n">gro</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="kp">sum</span><span class="p">()</span><span class="o">/</span><span class="p">(</span><span class="n">gro</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">-</span><span class="n">gro</span><span class="o">.</span><span class="n">isFree</span><span class="o">.</span><span class="kp">sum</span><span class="p">())</span>
-<span class="n">my_plot3</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">.</span><span class="n">unstack</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Mean price per event category [Week 1 September 2015]&#39;</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-<span class="n">my_plot3</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Event category&quot;</span><span class="p">)</span>
-<span class="n">my_plot3</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Mean price of events&quot;</span><span class="p">)</span>
+temp1 = gro.price.sum()/(gro.price.count()-gro.isFree.sum())
+my_plot3 = temp1.unstack().plot(kind=&#39;bar&#39;,title=&#39;Mean price per event category [Week 1 September 2015]&#39;,figsize=(10, 6))
+my_plot3.set_xlabel(&quot;Event category&quot;)
+my_plot3.set_ylabel(&quot;Mean price of events&quot;)
 </pre></div>
 
 
