@@ -19,7 +19,6 @@
   <meta name="author" content="Datanice">
   <meta name="description" content="Posts and writings by Datanice">
 
-  <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Datanice Atom" />
 
 <meta name="keywords" content="">
 
@@ -59,7 +58,6 @@
     <header>
       <p>
       <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
-      &brvbar; <a href="/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
@@ -81,60 +79,60 @@ about the nearby popular spots.</p>
 
 <p>After looking into the Instagram API and playing around with it, I came
 up with the following script.</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">instagram.client</span> <span class="kn">import</span> <span class="n">InstagramAPI</span>
+<div class="highlight"><pre><span></span>import os
+import json
+from collections import Counter
+import pandas as pd
+from instagram.client import InstagramAPI
 
-<span class="n">INSTAGRAM_ACCESS_TOKEN</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="n">INSTAGRAM_CLIENT_ID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="n">INSTAGRAM_CLIENT_SECRET</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+INSTAGRAM_ACCESS_TOKEN = &#39;&#39;
+INSTAGRAM_CLIENT_ID = &#39;&#39;
+INSTAGRAM_CLIENT_SECRET = &#39;&#39;
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">InstagramAPI</span><span class="p">(</span><span class="n">access_token</span><span class="o">=</span><span class="n">INSTAGRAM_ACCESS_TOKEN</span><span class="p">,</span> <span class="n">client_id</span><span class="o">=</span><span class="n">INSTAGRAM_CLIENT_ID</span><span class="p">,</span><span class="n">client_secret</span><span class="o">=</span><span class="n">INSTAGRAM_CLIENT_SECRET</span><span class="p">)</span>
+api = InstagramAPI(access_token=INSTAGRAM_ACCESS_TOKEN, client_id=INSTAGRAM_CLIENT_ID,client_secret=INSTAGRAM_CLIENT_SECRET)
 
-<span class="k">def</span> <span class="nf">getNbLikes</span><span class="p">(</span><span class="n">listMedia</span><span class="p">):</span>
-    <span class="n">likes</span> <span class="o">=</span><span class="mi">0</span>
-    <span class="n">count</span> <span class="o">=</span><span class="mi">0</span>
-    <span class="k">for</span> <span class="n">media</span> <span class="ow">in</span> <span class="n">listMedia</span><span class="p">:</span>
-        <span class="n">likes</span> <span class="o">=</span> <span class="n">likes</span> <span class="o">+</span> <span class="n">media</span><span class="o">.</span><span class="n">like_count</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">likes</span><span class="o">/</span><span class="n">count</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mi">0</span>
+def getNbLikes(listMedia):
+    likes =0
+    count =0
+    for media in listMedia:
+        likes = likes + media.like_count
+        count = count + 1
+    if count &gt; 0:
+        return likes/count
+    else:
+        return 0
 
-<span class="k">def</span> <span class="nf">getTags</span><span class="p">(</span><span class="n">listMedia</span><span class="p">):</span>
-    <span class="n">tags</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">media</span> <span class="ow">in</span> <span class="n">listMedia</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">mediaTag</span> <span class="ow">in</span> <span class="n">media</span><span class="o">.</span><span class="n">tags</span><span class="p">:</span>
-            <span class="n">tags</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mediaTag</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+def getTags(listMedia):
+    tags = []
+    for media in listMedia:
+        for mediaTag in media.tags:
+            tags.append(mediaTag.name)
+    return Counter(tags)
 
-<span class="k">def</span> <span class="nf">getMedia</span><span class="p">(</span><span class="n">locationId</span><span class="p">):</span>
-    <span class="n">medias</span> <span class="o">=</span>  <span class="n">api</span><span class="o">.</span><span class="n">location_recent_media</span><span class="p">(</span><span class="n">location_id</span><span class="o">=</span><span class="n">locationId</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">medias</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+def getMedia(locationId):
+    medias =  api.location_recent_media(location_id=locationId)
+    return medias[0]
 
 
-<span class="n">bestLocations</span> <span class="o">=</span> <span class="p">[];</span>
-<span class="n">latD</span><span class="o">=</span><span class="mf">48.858844</span>
-<span class="n">lonD</span><span class="o">=</span><span class="mf">2.294351</span>
+bestLocations = [];
+latD=48.858844
+lonD=2.294351
 
-<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
-        <span class="n">locations</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">location_search</span><span class="p">(</span><span class="n">lat</span><span class="o">=</span><span class="mf">48.858844</span><span class="o">+</span><span class="n">x</span><span class="o">*</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">lng</span><span class="o">=</span><span class="mf">2.294351</span><span class="o">+</span><span class="n">z</span><span class="o">*</span><span class="mf">0.001</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">locations</span><span class="p">:</span>
-            <span class="n">likes</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">location</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">bestLocations</span><span class="p">):</span>
-                <span class="n">images</span> <span class="o">=</span> <span class="n">getMedia</span><span class="p">(</span><span class="n">location</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-                <span class="n">likes</span> <span class="o">=</span> <span class="n">getNbLikes</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-                <span class="n">tags</span> <span class="o">=</span> <span class="n">getTags</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="p">:</span>
-                    <span class="n">bestLocations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">latitude</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span><span class="n">longitude</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span><span class="n">likes</span><span class="o">=</span><span class="n">likes</span><span class="p">,</span><span class="n">tags</span><span class="o">=</span><span class="n">tags</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">location</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="n">nbrImages</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">images</span><span class="p">)))</span>
+for x in range(-10, 10):
+    for z in range(-10,10):
+        print(x,z)
+        locations = api.location_search(lat=48.858844+x*0.001, lng=2.294351+z*0.001)
+        for location in locations:
+            likes = 0
+            if not any(d[&#39;name&#39;] == location.name for d in bestLocations):
+                images = getMedia(location.id)
+                likes = getNbLikes(images)
+                tags = getTags(images)
+                if len(images)&gt;0 :
+                    bestLocations.append(dict(name=location.name,latitude=location.point.latitude,longitude=location.point.longitude,likes=likes,tags=tags,id=location.id,nbrImages=len(images)))
 
-<span class="n">finalData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">bestLocations</span><span class="p">)</span>
-<span class="n">finalData</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;instadata.csv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+finalData = pd.DataFrame.from_dict(bestLocations)
+finalData.to_csv(&#39;instadata.csv&#39;, sep=&#39;\t&#39;, encoding=&#39;utf-8&#39;)
 </pre></div>
 
 
@@ -146,9 +144,9 @@ values you get from Instagram
 <a href="https://www.instagram.com/developer/clients/manage/">here</a>.</p>
 <p>After running the previous script for some time, we get a nice dataset
 that we can analyze with pandas.</p>
-<div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="o">&gt;</span> <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;instadata.csv&quot;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="o">&gt;</span> <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight"><pre><span></span>&gt; import pandas as pd
+&gt; df = pd.read_csv(&quot;instadata.csv&quot;,sep=&#39;\t&#39;)
+&gt; df.head(10)
 </pre></div>
 
 

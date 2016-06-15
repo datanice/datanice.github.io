@@ -19,7 +19,6 @@
   <meta name="author" content="Datanice">
   <meta name="description" content="Posts and writings by Datanice">
 
-  <link href="/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Datanice Atom" />
 
 <meta name="keywords" content="">
 
@@ -59,7 +58,6 @@
     <header>
       <p>
       <a href="/">Index</a> &brvbar; <a href="/archives.html">Archives</a>
-      &brvbar; <a href="/feeds/all.atom.xml">Atom</a>
       </p>
     </header>
 
@@ -86,10 +84,10 @@ project</strong>.</p>
 <h1>Data understanding :</h1>
 <p>For data exploration I like to use IPython Notebook which allows you to
 run your scripts line by line:</p>
-<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;train.csv&#39;</span><span class="p">)</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="c1">#884262</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="highlight"><pre><span></span>import pandas as pd
+df = pd.read_csv(&#39;train.csv&#39;)
+len(df) #884262
+df.head()
 </pre></div>
 
 
